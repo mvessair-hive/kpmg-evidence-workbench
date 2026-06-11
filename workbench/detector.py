@@ -161,8 +161,10 @@ def _scan_comments(path: Path, text: str) -> List[AnomalyFinding]:
 
 
 def scan_file(path: Path) -> List[AnomalyFinding]:
+    from .parsing import _read_text  # PDFs are extracted to text, then scanned
+
     try:
-        text = path.read_text(encoding="utf-8", errors="replace")
+        text = _read_text(path)
     except OSError:
         return []
     findings = _scan_lines(path, text)

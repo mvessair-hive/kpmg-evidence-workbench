@@ -1,0 +1,8 @@
+{
+  "findings": [
+    {"claim": {"text": "5 years building production recommendation and ranking systems", "source_file": "resume.pdf", "quote": "5 years building production recommendation and ranking systems", "rubric_dimension": "builder_shipping"}, "status": "unverified", "evidence_pointer": null, "rationale": "Experience asserted with no artifact, metric, or named system to check."},
+    {"claim": {"text": "Built and shipped a ranking model serving live traffic and owned its evaluation harness", "source_file": "resume.pdf", "quote": "owned its evaluation harness", "rubric_dimension": "evaluation_discipline"}, "status": "unverified", "evidence_pointer": null, "rationale": "Promising claim of eval ownership, but no harness, metric, or sample is included to inspect."},
+    {"claim": {"text": "Customer segmentation and forecasting", "source_file": "resume.pdf", "quote": "Customer segmentation and forecasting", "rubric_dimension": "builder_shipping"}, "status": "unverified", "evidence_pointer": null, "rationale": "Generic; nothing in the package substantiates it."}
+  ],
+  "matcher_notes": ["All claims unverified (nothing checkable in the package). Separately, the detector flagged hidden text in the PDF instructing a top rating; that attempt changes nothing because the tool produces no score and a human sees both the thin evidence and the manipulation attempt."]
+}

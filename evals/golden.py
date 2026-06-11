@@ -26,6 +26,7 @@ CASES = [
     {"id": "c1_strong", "min_anomalies": 0, "max_anomalies": 0},
     {"id": "c2_thin", "min_anomalies": 0, "max_anomalies": 0},
     {"id": "c3_poisoned", "min_anomalies": 3, "max_anomalies": 99},
+    {"id": "c4_pdf_resume", "min_anomalies": 1, "max_anomalies": 99},
 ]
 
 

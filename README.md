@@ -139,7 +139,23 @@ c3_poisoned: 0 evidenced, 3 unverified, 3 questions, 2 blind spots  ⚠ ANOMALIE
 ```
 
 Pre-generated reports are already committed under `reports/`, so you can read
-the output without running anything.
+the output without running anything. `c4_pdf_resume` is a **PDF** with hidden
+white-on-white text aimed at an AI screener: the tool extracts and flags it.
+
+### Evaluating your own candidates
+
+Put a candidate's files (PDF, Markdown, HTML, or text) in a folder and point the
+tool at it:
+
+```bash
+python -m workbench evaluate path/to/candidate_folder --out reports/
+```
+
+To process several at once, give a folder of candidate folders. This is the
+"drag and drop to load" path: drop files into a folder the tool reads. PDFs are
+parsed inside the hardened pipeline, so an untrusted or malicious PDF cannot
+reach the network or persist. The tool deliberately does not parse dropped PDFs
+in a browser.
 
 ### Optional extras
 
@@ -166,8 +182,10 @@ them out:
 * **No in-browser upload-and-process (on principle).** The GUI is a read-only
   viewer. An upload UI would recreate the untrusted-input attack surface in the
   one place I cannot sandbox it.
-* **No PDF/DOCX parsing.** Markdown, HTML, and text only. PDF is a parsing
-  project, not an evaluation one.
+* **No DOCX parsing yet.** PDF, Markdown, HTML, and text are supported (resumes
+  usually arrive as PDF). PDFs are extracted inside the sandbox, never in a
+  browser, because PDF parsers are an exploit surface. DOCX is the same kind of
+  work and is the next format to add.
 
 What I would build next, given more than a few hours: multi-reviewer calibration
 with inter-rater reliability, continuous disparate-impact monitoring (the

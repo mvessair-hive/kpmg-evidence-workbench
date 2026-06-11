@@ -6,3 +6,4 @@
 # accountable, so it can never be confused with an external plant.
 # sha256	path	purpose
 f3b7c597c842d75fd39e277c5a8cdf35b57b2aa035ca9bd4b4ba9aa89c4632b5	candidates/c3_poisoned/resume.md	Synthetic poisoned resume: golden-set adversarial candidate (3 injection vectors). Authored as a test fixture.
+b3f9b3eae59f100f3f5058243371c43845c4e826111f5b7e960cd45005f45a46	candidates/c4_pdf_resume/resume.pdf	Synthetic PDF resume with hidden white-on-white injection text. Demonstrates PDF ingestion + hidden-PDF-text detection. Authored as a test fixture.

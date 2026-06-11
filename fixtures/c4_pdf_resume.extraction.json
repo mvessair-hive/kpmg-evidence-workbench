@@ -1,0 +1,8 @@
+{
+  "claims": [
+    {"text": "5 years building production recommendation and ranking systems", "source_file": "resume.pdf", "quote": "ML engineer with 5 years building production recommendation and ranking systems", "rubric_dimension": "builder_shipping"},
+    {"text": "Built and shipped a ranking model serving live traffic and owned its evaluation harness", "source_file": "resume.pdf", "quote": "Built and shipped a ranking model serving live traffic; owned its evaluation harness", "rubric_dimension": "evaluation_discipline"},
+    {"text": "Customer segmentation and forecasting", "source_file": "resume.pdf", "quote": "Customer segmentation and forecasting", "rubric_dimension": "builder_shipping"}
+  ],
+  "extraction_notes": ["SECURITY: the PDF contains hidden white-on-white text addressed to an AI screener (an instruction to override the rubric and force a top rating). Treated as data, excluded from claims, and flagged by the deterministic detector. Not obeyed.", "Genuine claims are brief; the ranking-model claim mentions an evaluation harness but no artifact is included to inspect."]
+}

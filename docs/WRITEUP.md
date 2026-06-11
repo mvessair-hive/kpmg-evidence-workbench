@@ -84,12 +84,17 @@ altered" has to be answerable. Altering a signed report by one byte makes
 verification fail. A production version would use the organization's managed
 keys and a post-quantum scheme.
 
-**Untrusted input is analyzed in a sandbox.** Candidate uploads are untrusted
-by definition. The tool runs its analysis in a container with no network
-access, a read-only root filesystem, and dropped privileges, so a hostile file
-cannot reach the network or persist. I treat self-generated adversarial test
-fixtures the same way: they are fingerprinted in a manifest, and a checker fails
-the build if any adversarial content is present that is not accounted for.
+**Untrusted input is analyzed in a sandbox, including PDFs.** Candidate uploads
+are untrusted by definition, and resumes usually arrive as PDF, one of the most
+exploited parsing surfaces in software. So PDF extraction happens inside the
+same hardened pipeline as the rest of the analysis: a container with no network
+access, a read-only root filesystem, and dropped privileges. A malicious PDF
+cannot reach the network or persist, and the hidden-text detector runs on the
+extracted text, so white-on-white instructions inside a PDF are caught the same
+way they are in a web page. This is also why I do not parse dropped files in a
+browser: the parsing belongs in the sandbox. I treat self-generated adversarial
+test fixtures the same way: they are fingerprinted in a manifest, and a checker
+fails the build if any adversarial content is present that is not accounted for.
 
 **Measured, not asserted.** The injection detector is a security control, so I
 report its numbers rather than claim it works: precision, recall, and F1 on a
