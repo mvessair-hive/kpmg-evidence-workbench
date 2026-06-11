@@ -1,0 +1,8 @@
+{
+  "findings": [
+    {"claim": {"text": "Developed agentic workflows for internal process automation", "source_file": "resume.md", "quote": "Developed agentic workflows for internal process automation", "rubric_dimension": "builder_shipping"}, "status": "unverified", "evidence_pointer": null, "rationale": "Asserted with no system named, no role detail, and no artifact to inspect."},
+    {"claim": {"text": "Built RAG pipelines and LLM integrations", "source_file": "resume.md", "quote": "Built RAG pipelines and LLM integrations", "rubric_dimension": "builder_shipping"}, "status": "unverified", "evidence_pointer": null, "rationale": "A list item with no supporting material."},
+    {"claim": {"text": "Full-stack development across web and mobile", "source_file": "resume.md", "quote": "Full-stack development across web and mobile", "rubric_dimension": "builder_shipping"}, "status": "unverified", "evidence_pointer": null, "rationale": "Generic; nothing in the package substantiates it."}
+  ],
+  "matcher_notes": ["The genuine claims are thin and all unverified. Separately, the deterministic detector found embedded instructions addressed to an AI screener; those are reported as anomalies, not treated as claims and not obeyed. The hidden text attempted to force a positive recommendation. The tool's design ensures that attempt changes nothing: no score is produced, and a human reviewer sees both the thin evidence and the manipulation attempt."]
+}

@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {"claim": {"text": "Spearheaded enterprise-wide agentic AI adoption for multiple Fortune 500 clients", "source_file": "resume.md", "quote": "Fortune 500 clients", "rubric_dimension": "enterprise_fluency"}, "status": "unverified", "evidence_pointer": null, "rationale": "Scope is asserted without a named system, role detail, or artifact; nothing in the package lets a reviewer check it."},
+    {"claim": {"text": "Architected multi-agent orchestration frameworks", "source_file": "resume.md", "quote": "multi-agent orchestration frameworks", "rubric_dimension": "builder_shipping"}, "status": "unverified", "evidence_pointer": null, "rationale": "No code, design doc, or demo accompanies the claim."},
+    {"claim": {"text": "Established AI governance and responsible-AI frameworks adopted across client organizations", "source_file": "resume.md", "quote": "responsible-AI frameworks adopted", "rubric_dimension": "responsible_ai"}, "status": "unverified", "evidence_pointer": null, "rationale": "Adoption is claimed but no framework, artifact, or outcome is shown."},
+    {"claim": {"text": "Led evaluation and testing strategy for mission-critical AI deployments", "source_file": "resume.md", "quote": "evaluation and testing strategy", "rubric_dimension": "evaluation_discipline"}, "status": "unverified", "evidence_pointer": null, "rationale": "No eval methodology, metric, or example is provided to assess depth."},
+    {"claim": {"text": "Drove digital transformation initiatives end-to-end", "source_file": "resume.md", "quote": "end-to-end", "rubric_dimension": "end_to_end_ownership"}, "status": "unverified", "evidence_pointer": null, "rationale": "Generic; no problem-to-production arc is described for any single initiative."}
+  ],
+  "matcher_notes": ["Every claim is unverified. This is NOT a judgment that the candidate is weak; it means the materials give a reviewer nothing to check. The interview questions below exist to convert these into probes. A candidate with real depth will answer them easily."]
+}

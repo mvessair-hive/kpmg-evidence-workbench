@@ -1,0 +1,12 @@
+{
+  "claims": [
+    {"text": "Built and operates IntakeRouter, an agent triaging inbound claims email into 6 queues", "source_file": "resume.md", "quote": "Built and operate \"IntakeRouter\", an agent that triages inbound claims email into 6 queues", "rubric_dimension": "builder_shipping"},
+    {"text": "Designed an explicit human-approval gate: claims over $5,000 require adjuster approval", "source_file": "portfolio.md", "quote": "any claim with estimated exposure > $5,000, or model self-reported confidence < 0.8, is held for human approval", "rubric_dimension": "workflow_thinking"},
+    {"text": "Separated LLM classification from deterministic action; agent has no write access", "source_file": "portfolio.md", "quote": "The LLM classifies and extracts... Everything that ACTS is deterministic code... no write access to the claims system", "rubric_dimension": "workflow_thinking"},
+    {"text": "Wrote a 240-email labeled regression suite run nightly in CI", "source_file": "portfolio.md", "quote": "240-email labeled set... nightly regression in CI", "rubric_dimension": "evaluation_discipline"},
+    {"text": "Built an adversarial eval slice testing resistance to embedded instructions", "source_file": "portfolio.md", "quote": "adversarial slice: 18 emails crafted with misleading subject lines and embedded instructions", "rubric_dimension": "evaluation_discipline"},
+    {"text": "Caught and fixed a coverage gap: bilingual emails misrouted 31% due to thin eval coverage", "source_file": "portfolio.md", "quote": "v0.3 silently routed bilingual (FR/EN) emails to the wrong queue 31% of the time", "rubric_dimension": "end_to_end_ownership"},
+    {"text": "Delivered work inside a regulated insurance environment with compliance approval", "source_file": "portfolio.md", "quote": "anonymized historical mail (compliance approved)", "rubric_dimension": "enterprise_fluency"}
+  ],
+  "extraction_notes": ["Candidate included a work sample (portfolio.md) rather than only asserting; most claims are checkable against it."]
+}

@@ -1,0 +1,10 @@
+{
+  "claims": [
+    {"text": "Spearheaded enterprise-wide agentic AI adoption for multiple Fortune 500 clients", "source_file": "resume.md", "quote": "Spearheaded enterprise-wide agentic AI adoption for multiple Fortune 500 clients, delivering transformative ROI", "rubric_dimension": "enterprise_fluency"},
+    {"text": "Architected multi-agent orchestration frameworks", "source_file": "resume.md", "quote": "Architected cutting-edge multi-agent orchestration frameworks leveraging state-of-the-art LLMs", "rubric_dimension": "builder_shipping"},
+    {"text": "Established AI governance and responsible-AI frameworks adopted across client organizations", "source_file": "resume.md", "quote": "Established AI governance and responsible-AI frameworks adopted across client organizations", "rubric_dimension": "responsible_ai"},
+    {"text": "Led evaluation and testing strategy for mission-critical AI deployments", "source_file": "resume.md", "quote": "Led evaluation and testing strategy for mission-critical AI deployments", "rubric_dimension": "evaluation_discipline"},
+    {"text": "Drove digital transformation initiatives end-to-end", "source_file": "resume.md", "quote": "Drove digital transformation initiatives end-to-end", "rubric_dimension": "end_to_end_ownership"}
+  ],
+  "extraction_notes": ["Claims are broad and outcome-asserting ('transformative ROI', 'game-changing') with no artifacts, metrics, or specific systems named. No work sample included."]
+}

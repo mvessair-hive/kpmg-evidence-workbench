@@ -1,0 +1,8 @@
+# Inventory of intentionally adversarial content in this repo.
+# Every file that contains by-design injection/hidden-text payloads MUST be
+# listed here with its sha256. The verifier (evals/verify_adversarial.py) scans
+# the repo for adversarial content and fails if any is found that is NOT
+# declared here. This makes self-generated nefarious test data identifiable and
+# accountable, so it can never be confused with an external plant.
+# sha256	path	purpose
+f3b7c597c842d75fd39e277c5a8cdf35b57b2aa035ca9bd4b4ba9aa89c4632b5	candidates/c3_poisoned/resume.md	Synthetic poisoned resume: golden-set adversarial candidate (3 injection vectors). Authored as a test fixture.
