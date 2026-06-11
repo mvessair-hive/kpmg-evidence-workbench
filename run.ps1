@@ -14,8 +14,15 @@ trap { Write-Host "`nError: $_" -ForegroundColor Red; Read-Host "Press Enter to 
 # Works on both Windows PowerShell 5.1 and PowerShell 7+ (no 7-only `??` operator).
 $py = Get-Command python -ErrorAction SilentlyContinue
 if (-not $py) { $py = Get-Command python3 -ErrorAction SilentlyContinue }
-if (-not $py) { Write-Error "Python 3.10+ is required and was not found on PATH."; exit 1 }
-$ver = & $py.Source -c "import sys;print(f'{sys.version_info[0]}.{sys.version_info[1]}')"
+if (-not $py) {
+  Write-Error "Python 3.10+ is required and was not found on PATH. Install it from https://www.python.org/downloads/ (tick 'Add python.exe to PATH' during setup), then re-run .\run.ps1"
+  exit 1
+}
+$ver = & $py.Source -c "import sys;print(f'{sys.version_info[0]}.{sys.version_info[1]}')" 2>$null
+if (-not $ver -or $ver -notmatch '^\d+\.\d+') {
+  Write-Error "Found a 'python' entry on PATH, but it is not a working Python (on Windows this is usually the Microsoft Store alias stub). Install real Python 3.10+ from https://www.python.org/downloads/ (tick 'Add python.exe to PATH'), or turn off the stub under Settings > Apps > Advanced app settings > App execution aliases, then re-run .\run.ps1"
+  exit 1
+}
 $parts = $ver.Split('.')
 if ([int]$parts[0] -lt 3 -or ([int]$parts[0] -eq 3 -and [int]$parts[1] -lt 10)) {
   Write-Error "Python 3.10+ required; found $ver. Install from python.org, then re-run .\run.ps1"
