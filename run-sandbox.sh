@@ -32,9 +32,8 @@ echo ">> generating reports from candidate materials (reports/ is the only writa
 mkdir -p reports
 docker run --rm "${LOCK[@]}" \
   --user "$(id -u):$(id -g)" \
-  -e WORKBENCH_FIXTURES=/app/fixtures \
   -v "$(pwd)/reports:/app/reports:rw" \
   "$IMAGE" \
-  sh -c 'for c in candidates/*/; do WORKBENCH_CANDIDATE=$(basename "$c") python -m workbench evaluate "$c" --out reports/; done'
+  python -m workbench evaluate candidates/ --out reports/
 
 echo ">> done; reports/ updated on host"

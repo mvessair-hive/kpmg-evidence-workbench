@@ -15,6 +15,12 @@ def main(argv: list[str] | None = None) -> int:
     ev = sub.add_parser("evaluate", help="Evaluate one candidate directory, or a directory of candidates")
     ev.add_argument("path", type=Path)
     ev.add_argument("--out", type=Path, default=Path("reports"))
+    ev.add_argument(
+        "--live",
+        action="store_true",
+        help="Call the Anthropic API (needs ANTHROPIC_API_KEY, uses your own tokens). "
+        "Default replays committed fixtures, reproducing the sample reports with no key.",
+    )
     args = parser.parse_args(argv)
 
     roots = [args.path]
@@ -23,7 +29,7 @@ def main(argv: list[str] | None = None) -> int:
 
     args.out.mkdir(parents=True, exist_ok=True)
     for root in roots:
-        report = evaluate_candidate(root, args.out)
+        report = evaluate_candidate(root, args.out, live=args.live)
         out_file = args.out / f"{report.candidate_id}.md"
         out_file.write_text(render(report), encoding="utf-8")
         flag = " ⚠ ANOMALIES" if report.anomalies else ""

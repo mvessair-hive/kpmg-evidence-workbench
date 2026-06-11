@@ -54,22 +54,21 @@ class LLMUnavailable(Exception):
     pass
 
 
-# Optional replay layer. When no API key is present, the pipeline can read
-# committed reference outputs from fixtures/<candidate_id>.<stage>.json. This
-# keeps the demo reproducible by a reviewer with zero credentials, and lets the
-# committed reports be real pipeline output rather than hand-written samples.
-# Set WORKBENCH_FIXTURES to a directory and WORKBENCH_CANDIDATE to the id.
-FIXTURE_DIR = os.environ.get("WORKBENCH_FIXTURES")
-CANDIDATE_ID = os.environ.get("WORKBENCH_CANDIDATE")
+# Replay layer. By DEFAULT the pipeline reads committed reference outputs from
+# fixtures/<candidate_id>.<stage>.json. This makes the tool reproduce its
+# committed reports for any reviewer with a fresh clone, zero credentials, and
+# zero environment setup. Pass live=True (CLI: --live) to call the real API
+# instead, which needs ANTHROPIC_API_KEY and uses your own tokens.
+import json
+from pathlib import Path
+
+DEFAULT_FIXTURE_DIR = Path(__file__).resolve().parent.parent / "fixtures"
 
 
-def _fixture(stage: str):
-    if not (FIXTURE_DIR and CANDIDATE_ID):
+def _fixture(stage: str, candidate_id: str | None, fixtures_dir: Path):
+    if not candidate_id:
         return None
-    import json
-    from pathlib import Path
-
-    p = Path(FIXTURE_DIR) / f"{CANDIDATE_ID}.{stage}.json"
+    p = fixtures_dir / f"{candidate_id}.{stage}.json"
     if p.exists():
         return json.loads(p.read_text())
     return None
@@ -77,18 +76,29 @@ def _fixture(stage: str):
 
 def _client():
     if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise LLMUnavailable("ANTHROPIC_API_KEY not set")
+        raise LLMUnavailable(
+            "Live mode needs ANTHROPIC_API_KEY (uses your own tokens). "
+            "Omit --live to use the committed fixtures instead (no key needed)."
+        )
     import anthropic
 
     return anthropic.Anthropic()
 
 
-def extract_claims(package_text: str, audit: AuditLog) -> ExtractionResult:
-    fx = _fixture("extraction")
-    if fx is not None:
-        result = ExtractionResult.model_validate(fx)
-        audit.record("extract_claims", "fixture-replay", package_text, result.model_dump_json())
-        return result
+def extract_claims(
+    package_text: str,
+    audit: AuditLog,
+    candidate_id: str | None = None,
+    fixtures_dir: Path = DEFAULT_FIXTURE_DIR,
+    live: bool = False,
+) -> ExtractionResult:
+    if not live:
+        fx = _fixture("extraction", candidate_id, fixtures_dir)
+        if fx is not None:
+            result = ExtractionResult.model_validate(fx)
+            audit.record("extract_claims", "fixture-replay", package_text, result.model_dump_json())
+            return result
+        raise LLMUnavailable(f"no fixture for '{candidate_id}'; pass --live to call the API")
     client = _client()
     system = EXTRACT_SYSTEM.format(rubric=rubric_for_prompt())
     response = client.messages.parse(
@@ -103,12 +113,21 @@ def extract_claims(package_text: str, audit: AuditLog) -> ExtractionResult:
     return result
 
 
-def match_evidence(package_text: str, extraction: ExtractionResult, audit: AuditLog) -> MatchResult:
-    fx = _fixture("match")
-    if fx is not None:
-        result = MatchResult.model_validate(fx)
-        audit.record("match_evidence", "fixture-replay", package_text, result.model_dump_json())
-        return result
+def match_evidence(
+    package_text: str,
+    extraction: ExtractionResult,
+    audit: AuditLog,
+    candidate_id: str | None = None,
+    fixtures_dir: Path = DEFAULT_FIXTURE_DIR,
+    live: bool = False,
+) -> MatchResult:
+    if not live:
+        fx = _fixture("match", candidate_id, fixtures_dir)
+        if fx is not None:
+            result = MatchResult.model_validate(fx)
+            audit.record("match_evidence", "fixture-replay", package_text, result.model_dump_json())
+            return result
+        raise LLMUnavailable(f"no fixture for '{candidate_id}'; pass --live to call the API")
     client = _client()
     user = (
         "CANDIDATE MATERIALS:\n" + package_text +

@@ -77,21 +77,47 @@ run, and the Blind-Spot Report states that claim analysis did not.
 
 ## Run it
 
+Requires **Python 3.10+** (developed on 3.12). No API key is needed for any of
+the steps below; the default path replays committed model outputs so the tool
+reproduces its sample reports on a fresh clone with zero setup.
+
 ```bash
-python -m venv .venv && . .venv/bin/activate
+# 1. Setup (one command installs everything, including the test runner)
+python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
 
-# Deterministic tests and eval, no API key needed, reproducible by anyone:
+# 2. Tests + adversarial-accountability check + golden eval (no key, deterministic)
 python -m pytest -q
+python evals/verify_adversarial.py
 python evals/golden.py
 
-# Full pipeline (needs your own key; uses your own tokens):
-export ANTHROPIC_API_KEY=sk-ant-...
+# 3. Generate the reports yourself (no key — replays committed fixtures)
 python -m workbench evaluate candidates/ --out reports/
+#    reports/*.md now match the committed ones.
 ```
 
-Pre-generated reports are committed under `reports/`, so the output is
-inspectable without running anything.
+Expected from step 3:
+
+```
+c1_strong:   4 evidenced, 3 unverified, 3 questions, 2 blind spots
+c2_thin:     0 evidenced, 5 unverified, 5 questions, 2 blind spots
+c3_poisoned: 0 evidenced, 3 unverified, 3 questions, 2 blind spots  ⚠ ANOMALIES
+```
+
+Pre-generated reports are already committed under `reports/`, so you can read
+the output without running anything.
+
+### Optional extras
+
+```bash
+# Run the live pipeline against the real API (your own key, your own tokens):
+export ANTHROPIC_API_KEY=sk-ant-...
+python -m workbench evaluate candidates/ --out reports/ --live
+
+# Analyze the (untrusted) candidate files inside a locked-down container
+# (no network, read-only root, dropped capabilities). Requires Docker:
+./run-sandbox.sh
+```
 
 ## What I deliberately left out (3-hour build)
 

@@ -96,7 +96,7 @@ def _blind_spots(pkg: CandidatePackage, findings: List[EvidenceFinding], llm_ran
     return spots
 
 
-def evaluate_candidate(root: Path, out_dir: Path) -> CandidateReport:
+def evaluate_candidate(root: Path, out_dir: Path, live: bool = False) -> CandidateReport:
     pkg = load_candidate(root)
     audit = AuditLog(out_dir / "audit_log.jsonl")
 
@@ -106,8 +106,8 @@ def evaluate_candidate(root: Path, out_dir: Path) -> CandidateReport:
     llm_ran = False
     try:
         text = pkg.combined_text()
-        extraction = llm.extract_claims(text, audit)
-        match = llm.match_evidence(text, extraction, audit)
+        extraction = llm.extract_claims(text, audit, candidate_id=pkg.candidate_id, live=live)
+        match = llm.match_evidence(text, extraction, audit, candidate_id=pkg.candidate_id, live=live)
         findings = match.findings
         llm_ran = True
     except llm.LLMUnavailable:
