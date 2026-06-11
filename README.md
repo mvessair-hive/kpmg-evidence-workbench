@@ -95,9 +95,11 @@ model and its known gaps are documented in `SECURITY.md`.
 
 ## Run it
 
-Requires **Python 3.10+** (developed on 3.12). No API key is needed; the default
-path replays committed model outputs so the tool reproduces its sample reports
-on a fresh clone with zero setup.
+**Prerequisites:** **Python 3.10+** is the only requirement to evaluate the tool
+(developed on 3.12). No API key is needed; the default path replays committed
+model outputs so the tool reproduces its sample reports on a fresh clone with
+zero setup. **Docker is optional** and only needed for `./run-sandbox.sh`, which
+demonstrates the isolated parsing sandbox; everything else runs without it.
 
 ### One command
 

@@ -18,6 +18,22 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# Docker is the only prerequisite for this optional script, and it is NOT needed
+# to evaluate the tool. The full pipeline, tests, reports, and viewer all run
+# without Docker via ./run.sh. This script only demonstrates the hardened
+# sandbox that isolates untrusted-file parsing.
+if ! command -v docker >/dev/null 2>&1; then
+  echo "This optional script needs Docker, which was not found on PATH."
+  echo "Docker is NOT required to evaluate the tool: run ./run.sh instead."
+  echo "Install Docker Desktop (macOS/Windows) or Docker Engine (Linux) to use the sandbox."
+  exit 1
+fi
+if ! docker info >/dev/null 2>&1; then
+  echo "Docker is installed but the daemon is not running. Start Docker Desktop, then re-run."
+  echo "(Docker is NOT required to evaluate the tool: ./run.sh works without it.)"
+  exit 1
+fi
+
 IMAGE="candidate-evidence-workbench:sandbox"
 LOCK=(--network none --read-only --cap-drop ALL --security-opt no-new-privileges
       --pids-limit 128 --memory 512m --tmpfs /tmp:rw,size=64m)
