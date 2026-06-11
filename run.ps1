@@ -8,7 +8,12 @@
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 
-$py = (Get-Command python -ErrorAction SilentlyContinue) ?? (Get-Command python3 -ErrorAction SilentlyContinue)
+# Pause at the end so a double-clicked window does not vanish before output is read.
+trap { Write-Host "`nError: $_" -ForegroundColor Red; Read-Host "Press Enter to close"; exit 1 }
+
+# Works on both Windows PowerShell 5.1 and PowerShell 7+ (no 7-only `??` operator).
+$py = Get-Command python -ErrorAction SilentlyContinue
+if (-not $py) { $py = Get-Command python3 -ErrorAction SilentlyContinue }
 if (-not $py) { Write-Error "Python 3.10+ is required and was not found on PATH."; exit 1 }
 $ver = & $py.Source -c "import sys;print(f'{sys.version_info[0]}.{sys.version_info[1]}')"
 $parts = $ver.Split('.')
@@ -34,7 +39,7 @@ python evals/detector_metrics.py
 python evals/fairness_invariance.py
 python evals/verify_provenance.py
 
-if ($args[0] -eq "test") { Write-Host ">> gate passed."; exit 0 }
+if ($args[0] -eq "test") { Write-Host ">> gate passed."; Read-Host "Press Enter to close"; exit 0 }
 
 Write-Host ">> generating signed reports"
 python -m workbench evaluate candidates/ --out reports/
@@ -45,3 +50,5 @@ Write-Host ""
 Write-Host "Done. Open the report viewer in a browser:"
 Write-Host "  docs\viewer.html"
 Write-Host "Or read the Markdown reports under reports\."
+Write-Host ""
+Read-Host "Press Enter to close"
