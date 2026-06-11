@@ -54,10 +54,14 @@ PAGE = """<!doctype html>
  .legend b{color:#33415c} .legend .pill{margin:0 2px}
  .lg-warn{color:#a02320;font-weight:600;margin-left:6px} .lg-blind{background:#eef2fb;color:#33415c;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;margin-left:6px}
  .lg-sig{color:#1d7a3f;font-weight:600;margin-left:6px}
- .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
- .tab{padding:8px 14px;border:1px solid #cdd3dd;background:#fff;border-radius:6px;cursor:pointer;font-size:14px}
- .tab.active{background:#00338d;color:#fff;border-color:#00338d}
- .tab .warn{color:#c0392b;font-weight:700} .tab.active .warn{color:#ffd2cc}
+ .ov-h{font-size:15px;color:#00338d;margin:0 0 4px} .ov-sub{font-weight:400;color:#8a93a3;font-size:12.5px}
+ table.ov{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;border-radius:8px;overflow:hidden;margin:8px 0 18px;font-size:13.5px}
+ table.ov th{background:#f2f4f8;color:#33415c;text-align:left;padding:8px 12px;font-size:12px}
+ table.ov td{padding:9px 12px;border-top:1px solid #eef0f4}
+ table.ov tr.row{cursor:pointer} table.ov tr.row:hover{background:#f6f9ff}
+ table.ov tr.active td{background:#eef4ff}
+ .flagcell{color:#a02320;font-weight:600} .cleancell{color:#1d7a3f}
+ .back{display:inline-block;margin:0 0 10px;color:#00338d;cursor:pointer;font-size:13px}
  .card{background:#fff;border:1px solid #e3e7ee;border-radius:10px;padding:0;overflow:hidden;display:none}
  .card.active{display:block}
  .disclaimer{background:#eef2fb;color:#33415c;font-size:13px;padding:10px 18px;border-bottom:1px solid #e3e7ee}
@@ -87,23 +91,38 @@ PAGE = """<!doctype html>
   <span class="lg-blind">blind spot</span> something the tool could not see or verify
   <span class="lg-sig">&#128274; signed</span> report is Ed25519-signed and tamper-evident
  </div>
- <div class="tabs" id="tabs"></div>
+ <h2 class="ov-h">Candidate overview <span class="ov-sub" id="ovsub"></span></h2>
+ <table class="ov" id="overview"><thead><tr><th>Candidate</th><th>Files</th><th>Flags</th><th>Evidenced</th><th>Unverified</th></tr></thead><tbody id="ovbody"></tbody></table>
  <div id="cards"></div>
 </div>
 <footer>Read-only viewer. The analysis runs in a sandboxed pipeline; this page only displays its output.</footer>
 <script>
 const DATA = __DATA__;
-const tabs = document.getElementById('tabs'), cards = document.getElementById('cards');
-DATA.forEach((r, i) => {
-  const t = document.createElement('div'); t.className = 'tab' + (i===0?' active':'');
-  t.innerHTML = r.id + (r.anomalies.length ? ' <span class="warn">\\u26a0</span>' : '');
-  t.onclick = () => { document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.card').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active'); document.getElementById('card-'+i).classList.add('active'); };
-  tabs.appendChild(t);
+const ovbody = document.getElementById('ovbody'), cards = document.getElementById('cards');
+document.getElementById('ovsub').textContent =
+  `(${DATA.length} submissions). Click a row to review. Flags mark manipulation attempts to check first, not a quality ranking.`;
 
-  const c = document.createElement('div'); c.className='card'+(i===0?' active':''); c.id='card-'+i;
-  let h = `<div class="disclaimer">Files examined: ${r.files.join(', ')||'none'}</div>`;
+function showCard(i){
+  document.querySelectorAll('.card').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('tr.row').forEach(x=>x.classList.remove('active'));
+  document.getElementById('card-'+i).classList.add('active');
+  document.getElementById('row-'+i).classList.add('active');
+  document.getElementById('card-'+i).scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+DATA.forEach((r, i) => {
+  const tr = document.createElement('tr'); tr.className='row'; tr.id='row-'+i;
+  const flags = r.anomalies.length
+    ? `<span class="flagcell">\\u26a0 ${r.anomalies.length}</span>`
+    : `<span class="cleancell">clean</span>`;
+  tr.innerHTML = `<td><b>${r.id}</b></td><td>${r.files.length}</td><td>${flags}</td>`+
+                 `<td>${r.evidenced}</td><td>${r.unverified}</td>`;
+  tr.onclick = () => showCard(i);
+  ovbody.appendChild(tr);
+
+  const c = document.createElement('div'); c.className='card'; c.id='card-'+i;
+  let h = `<div class="back" onclick="document.getElementById('overview').scrollIntoView({behavior:'smooth'})">\\u2191 back to overview</div>`;
+  h += `<div class="disclaimer">Files examined: ${r.files.join(', ')||'none'}</div>`;
   if (r.anomalies.length) h += `<div class="banner">\\u26a0 ${r.anomalies.length} anomaly flag(s). Information for the reviewer, not a rejection. A human decides what they mean.</div>`;
   h += `<section><h3>1. Evidence Map</h3>`;
   if (!r.findings.length) h += `<div class="count">No claims extracted (see Blind-Spot Report).</div>`;

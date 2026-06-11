@@ -1,0 +1,5 @@
+{"claims":[
+{"text":"Built a document-intake agent with a human-approval gate for low-confidence items","source_file":"resume.md","quote":"Built a document-intake agent that classifies and routes inbound forms; the human approves anything low-confidence","rubric_dimension":"workflow_thinking"},
+{"text":"Replaced a 6-hour weekly reconciliation with a tested scripted pipeline","source_file":"resume.md","quote":"Replaced a 6-hour weekly reconciliation with a scripted pipeline","rubric_dimension":"builder_shipping"},
+{"text":"Keeps a 60-item labeled set and reruns it before changes; expanded it after finding a French-intake weakness","source_file":"portfolio.md","quote":"I keep a 60-item labeled set and rerun it before each change; I added 12 multilingual samples","rubric_dimension":"evaluation_discipline"}],
+"extraction_notes":["Self-taught, non-traditional path. Included a work sample. One external portfolio link is present and is not fetched by the tool."]}

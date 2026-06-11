@@ -1,0 +1,5 @@
+{"claims":[
+{"text":"Built the model-serving and evaluation pipeline used by three internal teams","source_file":"resume.md","quote":"Built the model-serving and evaluation pipeline used by three internal teams","rubric_dimension":"builder_shipping"},
+{"text":"Set up drift monitoring and automatic rollback on accuracy drop","source_file":"resume.md","quote":"drift monitoring and an automatic rollback when accuracy drops","rubric_dimension":"evaluation_discipline"},
+{"text":"Built REST and event integrations across vendor APIs","source_file":"resume.md","quote":"REST and event integrations across vendor APIs","rubric_dimension":"builder_shipping"}],
+"extraction_notes":["MLOps/platform background. Claims are concrete about systems but no artifact or work sample is included."]}

@@ -105,23 +105,27 @@ through, which I then fixed. I also test fairness mechanically: identical
 resumes with swapped names, pronouns, and schools produce byte-identical output,
 so demographic identity cannot change a result.
 
-**A CLI with a read-only viewer, not a web app.** The analysis is a command-line
-tool; a self-contained `viewer.html` renders the reports in a browser with no
-server. I deliberately did not build an upload-and-process web UI: it would
-recreate the untrusted-input attack surface in the one place I cannot sandbox
-it. Showing results in a browser is safe; processing untrusted uploads there is
-not.
+**Built for a batch, with a read-only viewer.** A recruiter reviews many
+candidates at once, so the tool processes a whole folder in one run, and the
+viewer opens on an overview: every submission, its flag status, and its
+evidenced and unverified counts, with click-through to each report. The flag
+column surfaces manipulation attempts to check first; it is deliberately not a
+quality ranking, since ranking is the human's job. The viewer is read-only. I
+did not build an upload-and-process web UI, because it would recreate the
+untrusted-input attack surface in the one place I cannot sandbox it. Showing
+results in a browser is safe; parsing untrusted uploads there is not.
 
 ## Risks and what I would do with more time
 
-- **Extraction quality is unproven beyond my golden set.** I tested against
-  three synthetic candidates. Real materials are messier. The next step is a
-  larger, labeled evaluation set and measured extraction accuracy.
+- **Extraction quality is unproven beyond my golden set.** I tested against a
+  small, deliberately diverse synthetic set. Real materials are messier. The
+  next step is a larger, labeled evaluation set and measured extraction accuracy.
 - **Reviewer calibration.** Two reviewers reading the same evidence map may
   still probe differently. A production version would study and reduce that
   variance.
-- **No PDF or DOCX parsing yet.** Markdown, HTML, and text only. PDF is a
-  parsing project, not an evaluation one, so I left it out on purpose.
+- **No DOCX parsing yet.** PDF, Markdown, HTML, and text are supported; DOCX is
+  the next format. PDFs are parsed inside the sandbox, since PDF parsers are an
+  exploit surface.
 - **Fairness auditing.** The tool avoids demographic inference and does not
   score, which removes the most direct bias vector, but a real deployment needs
   ongoing disparate-impact monitoring.

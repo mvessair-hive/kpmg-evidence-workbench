@@ -1,0 +1,4 @@
+{"claims":[
+{"text":"Mapped the prior-authorization workflow end to end and prototyped a first-pass-summary agent with a human-approval step","source_file":"resume.md","quote":"prototyped an agent that drafts the first-pass summary for a human to approve","rubric_dimension":"workflow_thinking"},
+{"text":"Ran the change-management rollout of an internal tool across 40 staff","source_file":"resume.md","quote":"Ran the change-management rollout for a new internal tool across 40 staff","rubric_dimension":"enterprise_fluency"}],
+"extraction_notes":["Non-engineering path (operations). Strong on workflow and change management, early on building. No artifact included."]}

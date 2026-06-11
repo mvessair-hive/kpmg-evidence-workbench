@@ -52,8 +52,8 @@ code handles it, not the LLM. A control should be inspectable and immune to the
 attack class it guards against. The LLM is also told to treat all candidate
 text as data, never as instructions, as defence in depth.
 
-`candidates/c3_poisoned/` carries a synthetic poisoned resume. The golden-set
-eval asserts all three injection vectors are caught. The detector also handles
+`candidates/c3_poisoned/` carries a synthetic poisoned resume; the golden-set
+eval asserts its planted injection vectors are caught. The detector also handles
 **cryptic / encoded payloads**: base64 blobs that decode to instructions, and
 homoglyph evasion (Latin text spiked with Cyrillic or Greek lookalikes).
 
@@ -119,7 +119,7 @@ python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
 
 # 2. The full gate (no key, deterministic, reproducible by anyone)
-python -m pytest -q                    # 11 unit tests for the detector
+python -m pytest -q                    # 16 unit and edge-case tests
 python evals/verify_adversarial.py     # adversarial test fixtures are accounted for
 python evals/golden.py                 # golden-set expectations
 python evals/detector_metrics.py       # detector precision / recall / F1
@@ -135,17 +135,23 @@ python tools/build_viewer.py           # writes docs/viewer.html
 #    then open docs/viewer.html in any browser.
 ```
 
-Expected from step 3:
+Step 3 processes the whole batch of seven synthetic candidates at once (a
+deliberately diverse set: strong, buzzword-heavy, poisoned, a PDF with hidden
+text, a self-taught builder, an MLOps engineer, and an operations-to-builder
+path). Example lines:
 
 ```
-c1_strong:   4 evidenced, 3 unverified, 3 questions, 2 blind spots
-c2_thin:     0 evidenced, 5 unverified, 5 questions, 2 blind spots
-c3_poisoned: 0 evidenced, 3 unverified, 3 questions, 2 blind spots  ⚠ ANOMALIES
+c1_strong:    4 evidenced, 3 unverified, 3 questions, 2 blind spots
+c3_poisoned:  0 evidenced, 3 unverified, 3 questions, 2 blind spots  ⚠ ANOMALIES
+c4_pdf_resume:0 evidenced, 3 unverified, 3 questions, 2 blind spots  ⚠ ANOMALIES (hidden text in a PDF)
 ```
 
 Pre-generated reports are already committed under `reports/`, so you can read
-the output without running anything. `c4_pdf_resume` is a **PDF** with hidden
-white-on-white text aimed at an AI screener: the tool extracts and flags it.
+the output without running anything. The browser viewer (`docs/viewer.html`)
+opens on a **candidate overview**: every submission in the batch, its flag
+status, and its evidenced/unverified counts, with click-through to each report.
+The flag column marks manipulation attempts to review first; it is not a quality
+ranking.
 
 ### Evaluating your own candidates
 
