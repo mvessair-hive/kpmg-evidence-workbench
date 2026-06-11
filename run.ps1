@@ -10,6 +10,12 @@ Set-Location $PSScriptRoot
 
 $py = (Get-Command python -ErrorAction SilentlyContinue) ?? (Get-Command python3 -ErrorAction SilentlyContinue)
 if (-not $py) { Write-Error "Python 3.10+ is required and was not found on PATH."; exit 1 }
+$ver = & $py.Source -c "import sys;print(f'{sys.version_info[0]}.{sys.version_info[1]}')"
+$parts = $ver.Split('.')
+if ([int]$parts[0] -lt 3 -or ([int]$parts[0] -eq 3 -and [int]$parts[1] -lt 10)) {
+  Write-Error "Python 3.10+ required; found $ver. Install from python.org, then re-run .\run.ps1"
+  exit 1
+}
 
 if (-not (Test-Path .venv)) {
   Write-Host ">> creating virtualenv"

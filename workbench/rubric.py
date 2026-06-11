@@ -2,8 +2,9 @@
 
 Each dimension quotes the JD language it derives from, so a reviewer can
 audit the rubric itself. The rubric defines WHAT evidence would look like;
-it deliberately does not define scores or weights — humans weigh.
+it deliberately does not define scores or weights, humans weigh.
 """
+from __future__ import annotations
 
 RUBRIC = [
     {
