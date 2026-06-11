@@ -1,6 +1,6 @@
 # AI Builder Case Study: Candidate Evidence Workbench
 
-**Mitchell Vessair**
+**Mitchell Vessair — applying for AI Builder, Manager**
 
 **Artifact:** https://github.com/mvessair-hive/kpmg-evidence-workbench
 **Video (3 min):** {{VIDEO_LINK}}
