@@ -4,7 +4,7 @@
 **Role applied for: AI Builder, Manager**
 
 **Artifact:** https://github.com/mvessair-hive/kpmg-evidence-workbench
-**Video (3 min):** {{VIDEO_LINK}}
+**Video (3 min):** https://www.loom.com/share/9117c64c93f741ae94cc06f4b39f51f5
 
 ---
 
