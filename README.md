@@ -73,20 +73,25 @@ travels inside each record, so verification needs no key distribution.
 ## Architecture
 
 ```
-parse (deterministic)
-  -> extract claims        (LLM, schema-constrained)
-  -> match to evidence     (LLM, schema-constrained: evidenced | unverified)
-  -> detect hidden content (DETERMINISTIC, the security control)
-  -> assemble report       (deterministic: 3 panels)
-                           -> human reviewer decides
+              ┌─────────────── sandbox: no network, read-only root ───────────────┐
+  candidate   │ parse + extract text (PDF/MD/HTML/text)                            │
+  files  ───► │   -> detect hidden/encoded content   (DETERMINISTIC security control)│
+  (untrusted) │   -> extract claims                  (LLM, schema-constrained)      │
+              │   -> match claims to evidence         (LLM: evidenced | unverified)  │
+              │   -> assemble 3-panel report + sign   (deterministic, Ed25519)       │
+              └───────────────────────────────────┬───────────────────────────────┘
+                                                   ▼
+                                    human reviewer decides
 ```
 
-Every LLM call is written to an append-only `audit_log.jsonl` with timestamp,
-model, prompt hash, and output. That is the mechanical precondition for the
-disclosure the law requires.
+The language model extracts and matches; it never scores or decides. Detection
+and assembly are deterministic. Every LLM call is written to an append-only
+`audit_log.jsonl` (timestamp, model, prompt hash, output): the mechanical
+precondition for the disclosure the law requires.
 
 The pipeline degrades honestly. With no API key the deterministic stages still
-run, and the Blind-Spot Report states that claim analysis did not.
+run, and the Blind-Spot Report states that claim analysis did not. The threat
+model and its known gaps are documented in `SECURITY.md`.
 
 ## Run it
 
