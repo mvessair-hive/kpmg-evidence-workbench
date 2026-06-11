@@ -9,8 +9,8 @@ interviewer:
 2. **Interview Questions.** Every unverified claim, turned into a probe.
 3. **Blind-Spot Report.** What the tool could **not** verify or see.
 
-It does **not** score, rank, shortlist, or reject. That is the central design
-decision, and the reason for it follows.
+The tool does **not** score, rank, shortlist, or reject. That is the central
+design decision, and the reason for it follows.
 
 ---
 
