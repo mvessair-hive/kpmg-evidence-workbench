@@ -31,6 +31,7 @@ CASES = [
     {"id": "c6_mlops", "min_anomalies": 0, "max_anomalies": 0},
     {"id": "c7_ops_path", "min_anomalies": 0, "max_anomalies": 0},
     {"id": "c8_docx_resume", "min_anomalies": 1, "max_anomalies": 99},
+    {"id": "c9_scanned_image", "min_anomalies": 0, "max_anomalies": 0},
 ]
 
 
@@ -62,6 +63,14 @@ def run() -> int:
         failures.append("vector_coverage")
     else:
         print(f"vector coverage OK — caught: {sorted(kinds)}")
+
+    # image-content blind spot must fire for the scanned-image candidate
+    c9 = evaluate_candidate(ROOT / "candidates" / "c9_scanned_image", out)
+    if not any(b.category == "image_content" for b in c9.blind_spots):
+        print("IMAGE BLIND-SPOT FAIL: c9_scanned_image did not flag its image as unread")
+        failures.append("image_blindspot")
+    else:
+        print("image blind-spot OK - scanned image declared as unread content")
 
     print()
     if failures:

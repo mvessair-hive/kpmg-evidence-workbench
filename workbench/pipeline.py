@@ -6,7 +6,8 @@ from typing import List
 
 from . import llm
 from .audit import AuditLog
-from .detector import scan_candidate
+from .detector import scan_candidate, scan_file
+from .images import IMAGE_EXTS, ImageSignals, analyze_images
 from .parsing import CandidatePackage, load_candidate
 from .rubric import dimensions
 from .schemas import (
@@ -43,7 +44,8 @@ def _questions_from_unverified(findings: List[EvidenceFinding]) -> List[Intervie
     return questions
 
 
-def _blind_spots(pkg: CandidatePackage, findings: List[EvidenceFinding], llm_ran: bool) -> List[BlindSpot]:
+def _blind_spots(pkg: CandidatePackage, findings: List[EvidenceFinding], llm_ran: bool,
+                 imgsig: "ImageSignals | None" = None) -> List[BlindSpot]:
     spots: List[BlindSpot] = []
     if pkg.external_links:
         spots.append(
@@ -57,11 +59,26 @@ def _blind_spots(pkg: CandidatePackage, findings: List[EvidenceFinding], llm_ran
                 ),
             )
         )
-    if pkg.skipped:
+    if imgsig is not None and imgsig.count:
+        srcs = ", ".join(dict.fromkeys(imgsig.sources))
+        if imgsig.ocr_ran:
+            detail = (
+                f"{imgsig.count} image(s) present ({srcs}). OCR is installed, so the tool read them "
+                "and scanned the text for hidden instructions."
+            )
+        else:
+            detail = (
+                f"{imgsig.count} image(s) present ({srcs}) and NOT read. A scanned or image-based resume "
+                "can carry text a human sees but this text extractor does not. Review the image(s) manually, "
+                "or install Tesseract OCR to have the tool read and scan them automatically."
+            )
+        spots.append(BlindSpot(category="image_content", detail=detail))
+    non_image_skipped = [f for f in pkg.skipped if f.suffix.lower() not in IMAGE_EXTS]
+    if non_image_skipped:
         spots.append(
             BlindSpot(
                 category="files_skipped",
-                detail="Unsupported file type(s) not analyzed: " + ", ".join(f.name for f in pkg.skipped),
+                detail="Unsupported file type(s) not analyzed: " + ", ".join(f.name for f in non_image_skipped),
             )
         )
     covered = {f.claim.rubric_dimension for f in findings}
@@ -102,6 +119,18 @@ def evaluate_candidate(root: Path, out_dir: Path, live: bool = False) -> Candida
 
     anomalies = scan_candidate(pkg.files)  # deterministic, always runs
 
+    # Detect image content (standalone, or embedded in PDF/DOCX). If OCR is
+    # installed, read the images and scan the text for hidden instructions too.
+    standalone_images = [f for f in pkg.skipped if f.suffix.lower() in IMAGE_EXTS]
+    docs_for_images = [f for f in pkg.files if f.suffix.lower() in {".pdf", ".docx"}]
+    imgsig = analyze_images(standalone_images, docs_for_images)
+    if imgsig.ocr_ran and imgsig.ocr_text.strip():
+        import tempfile
+
+        scratch = Path(tempfile.mkdtemp()) / "ocr.txt"
+        scratch.write_text(imgsig.ocr_text, encoding="utf-8")
+        anomalies = anomalies + scan_file(scratch)
+
     findings: List[EvidenceFinding] = []
     llm_ran = False
     try:
@@ -118,7 +147,7 @@ def evaluate_candidate(root: Path, out_dir: Path, live: bool = False) -> Candida
         findings=findings,
         questions=_questions_from_unverified(findings),
         anomalies=anomalies,
-        blind_spots=_blind_spots(pkg, findings, llm_ran),
+        blind_spots=_blind_spots(pkg, findings, llm_ran, imgsig),
         files_examined=[f.name for f in pkg.files],
         files_skipped=[f.name for f in pkg.skipped],
     )

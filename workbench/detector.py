@@ -160,9 +160,16 @@ def _scan_comments(path: Path, text: str) -> List[AnomalyFinding]:
     return findings
 
 
+IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".tiff", ".tif", ".bmp"}
+
+
 def scan_file(path: Path) -> List[AnomalyFinding]:
     from .parsing import _read_text  # PDFs are extracted to text, then scanned
 
+    # Images are not text: decoding their bytes would produce noise and false
+    # matches. They go through the image-detection / OCR path, not here.
+    if path.suffix.lower() in IMAGE_SUFFIXES:
+        return []
     try:
         text = _read_text(path)
     except OSError:

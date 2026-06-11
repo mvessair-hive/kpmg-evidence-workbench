@@ -125,10 +125,14 @@ results in a browser is safe; parsing untrusted uploads there is not.
 - **Reviewer calibration.** Two reviewers reading the same evidence map may
   still probe differently. A production version would study and reduce that
   variance.
-- **No OCR for image-based resumes.** PDF, DOCX, Markdown, HTML, and text are
-  supported, parsed inside the sandbox since document parsers are an exploit
-  surface. A scanned-image resume, or text baked into a picture, is not read;
-  OCR is the next ingestion step.
+- **Image text is flagged, not read by default.** Images (standalone, embedded
+  in a PDF or DOCX, or a scanned-image resume) are detected and declared as a
+  blind spot so a reviewer knows to look. Reading the text needs an OCR engine,
+  a system dependency, so it is optional: install Tesseract and the tool reads
+  and scans the images; without it, the flag stands. Bundling OCR with no system
+  dependency is the next step.
+- **Interview questions are template-generated.** Consistent, but they read
+  repetitively. Richer, claim-specific probing is a near-term improvement.
 - **Fairness auditing.** The tool avoids demographic inference and does not
   score, which removes the most direct bias vector, but a real deployment needs
   ongoing disparate-impact monitoring.

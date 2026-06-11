@@ -13,6 +13,10 @@ the tool applies to candidate claims: name what you cannot verify.
 - **Hidden text inside PDF and DOCX files.** Documents are extracted to text and
   scanned, so a white-on-white instruction inside a PDF or a DOCX run is caught
   like one in a web page.
+- **Image channels (scanned resumes, embedded pictures).** Images are detected
+  (standalone, embedded in a PDF or DOCX) and declared as a blind spot, so a
+  text-only payload hidden in an image cannot pass silently. With the optional
+  Tesseract OCR engine installed, the image text is read and scanned too.
 - **Untrusted-file risk.** Parsing (including PDF parsing, an exploit surface)
   runs in a container with no network, a read-only root filesystem, dropped
   capabilities, and resource caps, so a hostile file cannot reach the network or
@@ -34,8 +38,10 @@ the tool applies to candidate claims: name what you cannot verify.
 - **Novel encodings.** It decodes base64 and flags mixed-script tokens. It does
   not yet handle hex, ROT-N, right-to-left override tricks, or Unicode tag
   characters. Each is a known follow-up.
-- **Text rendered as an image.** Instructions inside an embedded image are not
-  read; the tool does not run OCR.
+- **Text rendered as an image (partly).** Instructions baked into an image are
+  not read unless the optional Tesseract OCR engine is installed. The image is
+  still detected and declared as a blind spot, so the channel is never silent,
+  but without OCR the payload text itself is not scanned.
 - **A malicious file format exploit** that defeats the parser itself. The sandbox
   contains the blast radius (no network, no persistence), but containment is not
   prevention.

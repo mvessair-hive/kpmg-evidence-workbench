@@ -1,0 +1,3 @@
+{"findings":[
+{"claim":{"text":"Automation engineer with an operations focus, built internal automations and integrations","source_file":"note.txt","quote":"automation engineer, operations focus","rubric_dimension":"builder_shipping"},"status":"unverified","evidence_pointer":null,"rationale":"Only a one-line note is readable; the actual resume is an unreadable image. Nothing here is checkable."}],
+"matcher_notes":["Most of this candidate's content is inside a scanned image the tool cannot read. The evidence here is minimal by necessity; the image is declared as a blind spot so a human reviews it."]}

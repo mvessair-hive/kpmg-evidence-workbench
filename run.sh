@@ -4,9 +4,7 @@
 #   ./run.sh test     run the gate only
 # No API key needed. The default path replays committed model outputs.
 #
-# Tested on Linux. Should work on macOS (bash + python3); we do not have a Mac
-# to verify on, so if anything differs there, the manual steps in README.md
-# "Run it" are the fallback.
+# Verified on Linux and macOS (bash + python3).
 set -euo pipefail
 cd "$(dirname "$0")"
 

@@ -55,3 +55,27 @@ def test_large_input_is_handled(tmp_path):
     (cand / "resume.md").write_text("skill. " * 50000)  # ~350KB
     report = evaluate_candidate(cand, tmp_path / "out")
     assert report.candidate_id == "big"
+
+
+def test_image_detected_and_flagged(tmp_path):
+    # an image in a candidate dir must be detected and declared, not silently skipped
+    import sys
+    from pathlib import Path as _P
+    sys.path.insert(0, str(_P(__file__).resolve().parent.parent))
+    from workbench.images import analyze_images
+    img = tmp_path / "scan.png"
+    img.write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 64)  # minimal PNG-ish bytes
+    sig = analyze_images([img], [])
+    assert sig.count == 1
+    assert "scan.png" in sig.sources
+
+
+def test_image_not_scanned_as_text(tmp_path):
+    # the text detector must skip images (no false matches on binary bytes)
+    import sys
+    from pathlib import Path as _P
+    sys.path.insert(0, str(_P(__file__).resolve().parent.parent))
+    from workbench.detector import scan_file
+    img = tmp_path / "x.png"
+    img.write_bytes(bytes(range(256)) * 8)
+    assert scan_file(img) == []

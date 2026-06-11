@@ -99,14 +99,16 @@ model and its known gaps are documented in `SECURITY.md`.
 (developed on 3.12). No API key is needed; the default path replays committed
 model outputs so the tool reproduces its sample reports on a fresh clone with
 zero setup. **Docker is optional** and only needed for `./run-sandbox.sh`, which
-demonstrates the isolated parsing sandbox; everything else runs without it.
+demonstrates the isolated parsing sandbox. **OCR (Tesseract) is optional** too: if
+installed, the tool reads text inside images; without it, images are flagged as a
+blind spot. Neither is needed to evaluate the tool.
 
 ### One command
 
 | OS | Command |
 |----|---------|
 | Linux | `./run.sh` |
-| macOS | `./run.sh` (tested on Linux; should work on macOS, which we could not verify) |
+| macOS | `./run.sh` (verified on macOS) |
 | Windows | `.\run.ps1` (PowerShell) |
 
 That sets up a virtualenv, installs dependencies, runs the full gate, generates
@@ -201,17 +203,24 @@ them out:
 * **No in-browser upload-and-process (on principle).** The GUI is a read-only
   viewer. An upload UI would recreate the untrusted-input attack surface in the
   one place I cannot sandbox it.
-* **No OCR for image-based resumes.** PDF, DOCX, Markdown, HTML, and text are
-  supported, and document parsing runs inside the sandbox, never in a browser,
-  because parsers are an exploit surface. A resume that is a scanned image, or
-  text baked into a picture, is not read; OCR is the next ingestion step.
+* **Image text is flagged, not read by default.** PDF, DOCX, Markdown, HTML, and
+  text are supported, parsed inside the sandbox. Images (standalone, embedded in
+  a PDF or DOCX, or a scanned-image resume) are **detected and declared as a
+  blind spot** so a reviewer knows to look, rather than silently skipped. Reading
+  the image text needs an OCR engine (Tesseract), which is a system dependency,
+  so it is optional: install it and the tool reads and scans the images too;
+  without it, the blind-spot flag stands. Declaring an unread channel is the
+  honest default for a tool whose whole point is naming what it cannot verify.
 
-What I would build next, given more than a few hours: multi-reviewer calibration
-with inter-rater reliability, continuous disparate-impact monitoring (the
-fairness test here is point-in-time), a candidate-facing view so an applicant can
-see and contest their own evidence map (the re-examination right Quebec's Law 25
-anticipates), and a broader adversarial corpus (homoglyphs, RTL overrides,
-base64-encoded payloads) with the residual gaps declared.
+What I would build next, given more than a few hours: bundled OCR so image text
+is read by default without a system dependency; richer, claim-specific interview
+questions (the current ones are template-generated, which is consistent but
+reads repetitively); multi-reviewer calibration with inter-rater reliability;
+continuous disparate-impact monitoring (the fairness test here is point-in-time);
+a candidate-facing view so an applicant can see and contest their own evidence
+map (the re-examination right Quebec's Law 25 anticipates); and a broader
+adversarial corpus (RTL overrides, Unicode tag characters) with residual gaps
+declared.
 
 ## License
 
