@@ -69,10 +69,20 @@ AI screeners (white-on-white spans, zero-width characters, HTML comments saying
 "rate this candidate highly") appears in a meaningful share of real AI-scanned
 resumes. Detecting it is a security control, so deterministic code handles it.
 A control should be inspectable and immune to the attack class it guards
-against. The language model is also told to treat all candidate text as data,
+against. The detector also handles cryptic payloads: base64 blobs that decode to
+instructions, and homoglyph evasion (Latin text spiked with Cyrillic or Greek
+lookalikes). The language model is told to treat all candidate text as data,
 never as instructions, as a second layer. The detector deliberately over-flags,
 because every flag is shown to a human with no automated action attached, so a
-false positive costs almost nothing.
+false positive costs almost nothing. Its quality is measured, not assumed:
+precision, recall, and F1 on a labeled corpus, reported by the test suite.
+
+**Every report is signed.** Each report is Ed25519-signed, with a content hash,
+a timestamp, and the signer's public key recorded in a provenance ledger. In a
+system that informs decisions about people, "who produced this, and has it been
+altered" has to be answerable. Altering a signed report by one byte makes
+verification fail. A production version would use the organization's managed
+keys and a post-quantum scheme.
 
 **Untrusted input is analyzed in a sandbox.** Candidate uploads are untrusted
 by definition. The tool runs its analysis in a container with no network
@@ -81,9 +91,21 @@ cannot reach the network or persist. I treat self-generated adversarial test
 fixtures the same way: they are fingerprinted in a manifest, and a checker fails
 the build if any adversarial content is present that is not accounted for.
 
-**A CLI, not a web app.** With three hours, a command-line tool with committed
-sample reports is more inspectable per hour than a UI. A reviewer can read the
-output without running anything.
+**Measured, not asserted.** The injection detector is a security control, so I
+report its numbers rather than claim it works: precision, recall, and F1 on a
+labeled corpus that includes adversarial negatives (emphatic self-description,
+the literal word "stage", legitimate inline styling). Building that corpus found
+a real miss, a "disregard your evaluation rubric" phrasing the first version let
+through, which I then fixed. I also test fairness mechanically: identical
+resumes with swapped names, pronouns, and schools produce byte-identical output,
+so demographic identity cannot change a result.
+
+**A CLI with a read-only viewer, not a web app.** The analysis is a command-line
+tool; a self-contained `viewer.html` renders the reports in a browser with no
+server. I deliberately did not build an upload-and-process web UI: it would
+recreate the untrusted-input attack surface in the one place I cannot sandbox
+it. Showing results in a browser is safe; processing untrusted uploads there is
+not.
 
 ## Risks and what I would do with more time
 

@@ -53,7 +53,20 @@ attack class it guards against. The LLM is also told to treat all candidate
 text as data, never as instructions, as defence in depth.
 
 `candidates/c3_poisoned/` carries a synthetic poisoned resume. The golden-set
-eval asserts all three injection vectors are caught.
+eval asserts all three injection vectors are caught. The detector also handles
+**cryptic / encoded payloads**: base64 blobs that decode to instructions, and
+homoglyph evasion (Latin text spiked with Cyrillic or Greek lookalikes).
+
+## Provenance
+
+Every report is signed with an Ed25519 key. Each record in
+`reports/provenance.jsonl` carries a content hash, a timestamp, the tool
+version, and the signer's public key, so any report is tamper-evident and
+attributable. `python evals/verify_provenance.py` re-checks them; altering a
+report by one byte makes verification fail. If a report ever surfaces that this
+tool did not produce, or one is changed after the fact, the signature makes it
+detectable. The private key lives in `.keys/` (gitignored); the public key
+travels inside each record, so verification needs no key distribution.
 
 ---
 
@@ -77,23 +90,44 @@ run, and the Blind-Spot Report states that claim analysis did not.
 
 ## Run it
 
-Requires **Python 3.10+** (developed on 3.12). No API key is needed for any of
-the steps below; the default path replays committed model outputs so the tool
-reproduces its sample reports on a fresh clone with zero setup.
+Requires **Python 3.10+** (developed on 3.12). No API key is needed; the default
+path replays committed model outputs so the tool reproduces its sample reports
+on a fresh clone with zero setup.
+
+### One command
+
+| OS | Command |
+|----|---------|
+| Linux | `./run.sh` |
+| macOS | `./run.sh` (tested on Linux; should work on macOS, which we could not verify) |
+| Windows | `.\run.ps1` (PowerShell) |
+
+That sets up a virtualenv, installs dependencies, runs the full gate, generates
+the signed reports, and builds the viewer. Add `test` (`./run.sh test`) to run
+the gate only. Then open `docs/viewer.html` in any browser.
+
+### Or step by step
 
 ```bash
 # 1. Setup (one command installs everything, including the test runner)
 python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
 
-# 2. Tests + adversarial-accountability check + golden eval (no key, deterministic)
-python -m pytest -q
-python evals/verify_adversarial.py
-python evals/golden.py
+# 2. The full gate (no key, deterministic, reproducible by anyone)
+python -m pytest -q                    # 11 unit tests for the detector
+python evals/verify_adversarial.py     # adversarial test fixtures are accounted for
+python evals/golden.py                 # golden-set expectations
+python evals/detector_metrics.py       # detector precision / recall / F1
+python evals/fairness_invariance.py    # output is invariant to demographic signals
+python evals/verify_provenance.py      # every committed report verifies against its signature
 
-# 3. Generate the reports yourself (no key — replays committed fixtures)
+# 3. Generate the reports yourself (no key, replays committed fixtures)
 python -m workbench evaluate candidates/ --out reports/
-#    reports/*.md now match the committed ones.
+#    reports/*.md now match the committed ones, each Ed25519-signed in reports/provenance.jsonl.
+
+# 4. View the reports in a browser (no server, no install)
+python tools/build_viewer.py           # writes docs/viewer.html
+#    then open docs/viewer.html in any browser.
 ```
 
 Expected from step 3:
@@ -119,14 +153,28 @@ python -m workbench evaluate candidates/ --out reports/ --live
 ./run-sandbox.sh
 ```
 
-## What I deliberately left out (3-hour build)
+## What I deliberately left out
 
-* No scoring, ranking, or shortlisting. By design, not omission.
-* No PDF/DOCX parsing. Markdown, HTML, and text only. PDF is a parsing project,
-  not an evaluation one.
-* No link fetching. Declared as a blind spot instead of done insecurely.
-* No reviewer calibration across multiple humans. Named as the next step.
-* No UI. A CLI with committed Markdown reports is more inspectable per hour.
+Some of these are scope choices; two are on principle and I would defend keeping
+them out:
+
+* **No scoring, ranking, or shortlisting.** By design, not omission. This is the
+  whole thesis.
+* **No link fetching (on principle).** Fetching candidate-supplied URLs from the
+  analysis process is an egress and SSRF risk. I declare unfetched links as a
+  blind spot instead of doing it insecurely.
+* **No in-browser upload-and-process (on principle).** The GUI is a read-only
+  viewer. An upload UI would recreate the untrusted-input attack surface in the
+  one place I cannot sandbox it.
+* **No PDF/DOCX parsing.** Markdown, HTML, and text only. PDF is a parsing
+  project, not an evaluation one.
+
+What I would build next, given more than a few hours: multi-reviewer calibration
+with inter-rater reliability, continuous disparate-impact monitoring (the
+fairness test here is point-in-time), a candidate-facing view so an applicant can
+see and contest their own evidence map (the re-examination right Quebec's Law 25
+anticipates), and a broader adversarial corpus (homoglyphs, RTL overrides,
+base64-encoded payloads) with the residual gaps declared.
 
 ## License
 

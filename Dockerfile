@@ -20,6 +20,7 @@ COPY tests/ ./tests/
 COPY candidates/ ./candidates/
 COPY fixtures/ ./fixtures/
 COPY security/ ./security/
+COPY reports/ ./reports/
 
 USER analyst
 
@@ -27,4 +28,4 @@ USER analyst
 # eval. No network is needed or available (run with --network none). Reports
 # land in a mounted volume. -p no:cacheprovider keeps pytest from writing a
 # cache under the read-only root.
-CMD ["sh", "-c", "python -m pytest -q -p no:cacheprovider && python evals/verify_adversarial.py && python evals/golden.py"]
+CMD ["sh", "-c", "python -m pytest -q -p no:cacheprovider && python evals/verify_adversarial.py && python evals/golden.py && python evals/detector_metrics.py && python evals/fairness_invariance.py && python evals/verify_provenance.py"]

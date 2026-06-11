@@ -33,7 +33,7 @@ def _questions_from_unverified(findings: List[EvidenceFinding]) -> List[Intervie
             InterviewQuestion(
                 question=(
                     f"You note that {f.claim.text.rstrip('.').lower()}. "
-                    "Walk me through a concrete example — what did you build or decide, "
+                    "Walk me through a concrete example: what did you build or decide, "
                     "what was the hard tradeoff, and how did you know it worked?"
                 ),
                 probes_claim=f.claim.text,
@@ -72,7 +72,7 @@ def _blind_spots(pkg: CandidatePackage, findings: List[EvidenceFinding], llm_ran
                 category="rubric_dimensions_silent",
                 detail=(
                     "No claims found for: " + ", ".join(silent) +
-                    ". Silence is not absence — the candidate may simply not have written about these. Probe in interview."
+                    ". Silence is not absence; the candidate may simply not have written about these. Probe in interview."
                 ),
             )
         )
