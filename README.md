@@ -168,6 +168,12 @@ parsed inside the hardened pipeline, so an untrusted or malicious PDF cannot
 reach the network or persist. The tool deliberately does not parse dropped PDFs
 in a browser.
 
+### Pre-flight check
+
+```bash
+./scripts/preflight.sh   # build gate + secrets/PII/leak/placeholder checks
+```
+
 ### Optional extras
 
 ```bash
