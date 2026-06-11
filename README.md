@@ -74,7 +74,7 @@ travels inside each record, so verification needs no key distribution.
 
 ```
               ┌─────────────── sandbox: no network, read-only root ───────────────┐
-  candidate   │ parse + extract text (PDF/MD/HTML/text)                            │
+  candidate   │ parse + extract text (PDF/DOCX/MD/HTML/text)                       │
   files  ───► │   -> detect hidden/encoded content   (DETERMINISTIC security control)│
   (untrusted) │   -> extract claims                  (LLM, schema-constrained)      │
               │   -> match claims to evidence         (LLM: evidenced | unverified)  │
@@ -138,9 +138,9 @@ python tools/build_viewer.py           # writes docs/viewer.html
 ```
 
 Step 3 processes the whole batch of seven synthetic candidates at once (a
-deliberately diverse set: strong, buzzword-heavy, poisoned, a PDF with hidden
-text, a self-taught builder, an MLOps engineer, and an operations-to-builder
-path). Example lines:
+deliberately diverse set spanning backgrounds and formats: strong,
+buzzword-heavy, poisoned, a PDF and a DOCX each with hidden text, a self-taught
+builder, an MLOps engineer, and an operations-to-builder path). Example lines:
 
 ```
 c1_strong:    4 evidenced, 3 unverified, 3 questions, 2 blind spots
@@ -157,8 +157,8 @@ ranking.
 
 ### Evaluating your own candidates
 
-Put a candidate's files (PDF, Markdown, HTML, or text) in a folder and point the
-tool at it:
+Put a candidate's files (PDF, DOCX, Markdown, HTML, or text) in a folder and
+point the tool at it:
 
 ```bash
 python -m workbench evaluate path/to/candidate_folder --out reports/
@@ -201,10 +201,10 @@ them out:
 * **No in-browser upload-and-process (on principle).** The GUI is a read-only
   viewer. An upload UI would recreate the untrusted-input attack surface in the
   one place I cannot sandbox it.
-* **No DOCX parsing yet.** PDF, Markdown, HTML, and text are supported (resumes
-  usually arrive as PDF). PDFs are extracted inside the sandbox, never in a
-  browser, because PDF parsers are an exploit surface. DOCX is the same kind of
-  work and is the next format to add.
+* **No OCR for image-based resumes.** PDF, DOCX, Markdown, HTML, and text are
+  supported, and document parsing runs inside the sandbox, never in a browser,
+  because parsers are an exploit surface. A resume that is a scanned image, or
+  text baked into a picture, is not read; OCR is the next ingestion step.
 
 What I would build next, given more than a few hours: multi-reviewer calibration
 with inter-rater reliability, continuous disparate-impact monitoring (the

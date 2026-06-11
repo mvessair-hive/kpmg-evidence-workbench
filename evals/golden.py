@@ -30,6 +30,7 @@ CASES = [
     {"id": "c5_selftaught", "min_anomalies": 0, "max_anomalies": 0},
     {"id": "c6_mlops", "min_anomalies": 0, "max_anomalies": 0},
     {"id": "c7_ops_path", "min_anomalies": 0, "max_anomalies": 0},
+    {"id": "c8_docx_resume", "min_anomalies": 1, "max_anomalies": 99},
 ]
 
 

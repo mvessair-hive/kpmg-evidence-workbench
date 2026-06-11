@@ -10,8 +10,9 @@ the tool applies to candidate claims: name what you cannot verify.
   `display:none`, zero-width characters, HTML comments. Detected deterministically.
 - **Encoded payloads.** Base64 blobs that decode to instructions, and homoglyph
   evasion (Latin text spiked with Cyrillic or Greek lookalikes).
-- **Hidden text inside PDFs.** PDFs are extracted to text and scanned, so a
-  white-on-white instruction inside a PDF is caught like one in a web page.
+- **Hidden text inside PDF and DOCX files.** Documents are extracted to text and
+  scanned, so a white-on-white instruction inside a PDF or a DOCX run is caught
+  like one in a web page.
 - **Untrusted-file risk.** Parsing (including PDF parsing, an exploit surface)
   runs in a container with no network, a read-only root filesystem, dropped
   capabilities, and resource caps, so a hostile file cannot reach the network or

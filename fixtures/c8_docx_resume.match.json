@@ -1,0 +1,4 @@
+{"findings":[
+{"claim":{"text":"6 years building data products and ML services in production","source_file":"resume.docx","quote":"6 years building data products and ML services","rubric_dimension":"builder_shipping"},"status":"unverified","evidence_pointer":null,"rationale":"Tenure and scope asserted with no artifact, metric, or named system to check."},
+{"claim":{"text":"Built ETL and feature pipelines","source_file":"resume.docx","quote":"Built ETL and feature pipelines","rubric_dimension":"builder_shipping"},"status":"unverified","evidence_pointer":null,"rationale":"Generic; nothing in the package substantiates it."}],
+"matcher_notes":["All claims unverified (nothing checkable in the package). Separately, the detector flagged hidden white-font text in the DOCX instructing a top rating; that attempt changes nothing because the tool produces no score and a human sees both the thin evidence and the manipulation attempt."]}

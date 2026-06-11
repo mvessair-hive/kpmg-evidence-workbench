@@ -85,17 +85,18 @@ altered" has to be answerable. Altering a signed report by one byte makes
 verification fail. A production version would use the organization's managed
 keys and a post-quantum scheme.
 
-**Untrusted input is analyzed in a sandbox, including PDFs.** Candidate uploads
-are untrusted by definition, and resumes usually arrive as PDF, one of the most
-exploited parsing surfaces in software. So PDF extraction happens inside the
+**Untrusted input is analyzed in a sandbox, including PDF and DOCX.** Candidate
+uploads are untrusted by definition, and resumes arrive as PDF or DOCX, two of
+the most exploited parsing surfaces in software. So extraction happens inside the
 same hardened pipeline as the rest of the analysis: a container with no network
-access, a read-only root filesystem, and dropped privileges. A malicious PDF
-cannot reach the network or persist, and the hidden-text detector runs on the
-extracted text, so white-on-white instructions inside a PDF are caught the same
-way they are in a web page. This is also why I do not parse dropped files in a
-browser: the parsing belongs in the sandbox. I treat self-generated adversarial
-test fixtures the same way: they are fingerprinted in a manifest, and a checker
-fails the build if any adversarial content is present that is not accounted for.
+access, a read-only root filesystem, and dropped privileges. A malicious
+document cannot reach the network or persist, and the hidden-text detector runs
+on the extracted text, so white-on-white instructions inside a PDF or a DOCX are
+caught the same way they are in a web page. This is also why I do not parse
+dropped files in a browser: the parsing belongs in the sandbox. I treat
+self-generated adversarial test fixtures the same way: they are fingerprinted in
+a manifest, and a checker fails the build if any adversarial content is present
+that is not accounted for.
 
 **Measured, not asserted.** The injection detector is a security control, so I
 report its numbers rather than claim it works: precision, recall, and F1 on a
@@ -124,9 +125,10 @@ results in a browser is safe; parsing untrusted uploads there is not.
 - **Reviewer calibration.** Two reviewers reading the same evidence map may
   still probe differently. A production version would study and reduce that
   variance.
-- **No DOCX parsing yet.** PDF, Markdown, HTML, and text are supported; DOCX is
-  the next format. PDFs are parsed inside the sandbox, since PDF parsers are an
-  exploit surface.
+- **No OCR for image-based resumes.** PDF, DOCX, Markdown, HTML, and text are
+  supported, parsed inside the sandbox since document parsers are an exploit
+  surface. A scanned-image resume, or text baked into a picture, is not read;
+  OCR is the next ingestion step.
 - **Fairness auditing.** The tool avoids demographic inference and does not
   score, which removes the most direct bias vector, but a real deployment needs
   ongoing disparate-impact monitoring.
