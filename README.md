@@ -159,7 +159,7 @@ Some of these are scope choices; two are on principle and I would defend keeping
 them out:
 
 * **No scoring, ranking, or shortlisting.** By design, not omission. This is the
-  whole thesis.
+  whole point of the tool.
 * **No link fetching (on principle).** Fetching candidate-supplied URLs from the
   analysis process is an egress and SSRF risk. I declare unfetched links as a
   blind spot instead of doing it insecurely.
